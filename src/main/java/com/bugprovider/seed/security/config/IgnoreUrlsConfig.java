@@ -30,16 +30,16 @@ public class IgnoreUrlsConfig {
     private List<String> urls = new ArrayList<>();
 
     public Boolean passIgnoreUrls(HttpServletRequest request,
-                                   HttpServletResponse response,
-                                   FilterChain chain,Boolean passChain) throws IOException, ServletException {
+                                  HttpServletResponse response,
+                                  FilterChain chain, Boolean passChain) throws IOException, ServletException {
         FilterInvocation fi = new FilterInvocation(request, response, chain);
 
         //OPTIONS请求直接放行
         if (request.getMethod().equals(HttpMethod.OPTIONS.toString())) {
             if (passChain) {
                 fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
+                return true;
             }
-            return true;
         }
 
         //白名单请求直接放行
@@ -48,10 +48,9 @@ public class IgnoreUrlsConfig {
         for (String path : this.getUrls()) {
             if (pathMatcher.match(path, requestURI)) {
                 if (passChain) {
-                    log.info("passChain");
                     fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
+                    return true;
                 }
-                return true;
             }
         }
 

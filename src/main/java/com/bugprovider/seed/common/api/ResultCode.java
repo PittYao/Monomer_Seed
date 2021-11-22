@@ -9,7 +9,15 @@ public enum ResultCode implements IErrorCode {
     VALIDATE_FAILED(404, "参数检验失败"),
     UNAUTHORIZED(401, "暂未登录或token已经过期"),
     TOKEN_NULL(402, "token为空"),
-    FORBIDDEN(403, "没有相关权限");
+    FORBIDDEN(403, "没有相关权限"),
+
+
+    GET_SUCCESS(200, "查询成功"),
+    POST_SUCCESS(200, "操作成功"),
+    PUT_SUCCESS(200, "修改成功"),
+    DELETE_SUCCESS(200, "删除成功");
+
+
     private long code;
     private String message;
 

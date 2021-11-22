@@ -21,10 +21,13 @@ import java.io.IOException;
 @Slf4j
 public class DynamicSecurityFilter extends AbstractSecurityInterceptor implements Filter {
 
+    public static final String FILTER_APPLIED = "__spring_security_DynamicSecurityFilter_filterApplied";
+
     @Resource
     private DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
     @Autowired
     private IgnoreUrlsConfig ignoreUrlsConfig;
+
 
     @Resource
     public void setMyAccessDecisionManager(DynamicAccessDecisionManager dynamicAccessDecisionManager) {

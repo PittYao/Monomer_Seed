@@ -3,8 +3,7 @@ package com.bugprovider.seed.security.component;
 import cn.hutool.core.util.StrUtil;
 import com.bugprovider.seed.security.config.IgnoreUrlsConfig;
 import com.bugprovider.seed.security.util.JwtTokenUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,8 +23,8 @@ import java.util.Objects;
 /**
  * JWT登录授权过滤器
  */
+@Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
@@ -67,19 +66,20 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         // 截取token值
         String authToken = authHeader.substring(this.tokenHead.length());
-        // 校验token是否过期
-        boolean tokenExpired = jwtTokenUtil.isTokenExpired(authToken);
-        if (tokenExpired) {
-            request.setAttribute("TokenError", "token已过期");
+
+        // 从token值获取用户名
+        String username = jwtTokenUtil.getUserNameFromToken(authToken);
+        log.info("checking username:{}", username);
+        if (StrUtil.isBlank(username)) {
+            request.setAttribute("TokenError", "token异常");
             chain.doFilter(request, response);
             return;
         }
 
-        // 从token值获取用户名
-        String username = jwtTokenUtil.getUserNameFromToken(authToken);
-        LOGGER.info("checking username:{}", username);
-        if (StrUtil.isBlank(username)) {
-            request.setAttribute("TokenError", "token异常");
+        // 校验token是否过期
+        boolean tokenExpired = jwtTokenUtil.isTokenExpired(authToken);
+        if (tokenExpired) {
+            request.setAttribute("TokenError", "token已过期");
             chain.doFilter(request, response);
             return;
         }
@@ -102,7 +102,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (jwtTokenUtil.validateToken(authToken, userDetails)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            LOGGER.info("authenticated user:{}", username);
+            log.info("authenticated user:{}", username);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

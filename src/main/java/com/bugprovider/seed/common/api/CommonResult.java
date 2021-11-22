@@ -17,6 +17,12 @@ public class CommonResult<T> {
         this.data = data;
     }
 
+    public CommonResult(IErrorCode errorCode, T data) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+        this.data = data;
+    }
+
     /**
      * 成功返回结果
      *

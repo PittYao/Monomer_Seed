@@ -1,0 +1,23 @@
+POST http://localhost:8999/admin/login
+Content-Type: application/json
+
+{
+  "username": "ceshi",
+  "password": "123456"
+}
+> {%
+    client.global.set("auth_token",response.body.data.token);
+%}
+
+
+###
+GET http://localhost:8999/admin/test
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+###
+GET http://localhost:8999/subject/test
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+###

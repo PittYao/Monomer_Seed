@@ -19,8 +19,7 @@ import com.bugprovider.seed.modules.ums.service.UmsAdminCacheService;
 import com.bugprovider.seed.modules.ums.service.UmsAdminRoleRelationService;
 import com.bugprovider.seed.modules.ums.service.UmsAdminService;
 import com.bugprovider.seed.security.util.JwtTokenUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,9 +42,9 @@ import java.util.List;
 /**
  * 后台管理员管理Service实现类
  */
+@Slf4j
 @Service
 public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> implements UmsAdminService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
@@ -93,13 +92,17 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
         baseMapper.insert(umsAdmin);
+
+        if (umsAdmin == null) {
+            Asserts.fail("注册失败");
+        }
+
         return umsAdmin;
     }
 
     @Override
     public String login(String username, String password) {
         String token = null;
-        //密码需要客户端加密后传递
         try {
             UserDetails userDetails = loadUserByUsername(username);
             if(!passwordEncoder.matches(password,userDetails.getPassword())){
@@ -114,8 +117,13 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
 //            updateLoginTimeByUsername(username);
             insertLoginLog(username);
         } catch (AuthenticationException e) {
-            LOGGER.warn("登录异常:{}", e.getMessage());
+            log.warn("登录异常:{}", e.getMessage());
         }
+
+        if (StrUtil.isBlank(token)) {
+            Asserts.fail("用户名或密码错误");
+        }
+
         return token;
     }
 

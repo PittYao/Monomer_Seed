@@ -1,4 +1,4 @@
-package com.bugprovider.seed.domain;
+package com.bugprovider.seed.security.domain;
 
 
 import com.bugprovider.seed.modules.ums.model.UmsAdmin;

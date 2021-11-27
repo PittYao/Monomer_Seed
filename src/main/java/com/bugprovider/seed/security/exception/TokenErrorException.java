@@ -1,4 +1,4 @@
-package com.bugprovider.seed.security.component;
+package com.bugprovider.seed.security.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

@@ -1,7 +1,9 @@
 package com.bugprovider.seed.modules.ums.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bugprovider.seed.common.service.RedisService;
 import com.bugprovider.seed.modules.ums.mapper.UmsAdminMapper;
 import com.bugprovider.seed.modules.ums.model.UmsAdmin;
@@ -58,9 +60,10 @@ public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {
 
     @Override
     public void delResourceListByRole(Long roleId) {
-        QueryWrapper<UmsAdminRoleRelation> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(UmsAdminRoleRelation::getRoleId,roleId);
-        List<UmsAdminRoleRelation> relationList = adminRoleRelationService.list(wrapper);
+        List<UmsAdminRoleRelation> relationList = adminRoleRelationService.list(
+                new LambdaQueryWrapper<UmsAdminRoleRelation>()
+                        .eq(UmsAdminRoleRelation::getRoleId,roleId)
+        );
         if (CollUtil.isNotEmpty(relationList)) {
             String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
             List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
@@ -70,9 +73,10 @@ public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {
 
     @Override
     public void delResourceListByRoleIds(List<Long> roleIds) {
-        QueryWrapper<UmsAdminRoleRelation> wrapper = new QueryWrapper<>();
-        wrapper.lambda().in(UmsAdminRoleRelation::getRoleId,roleIds);
-        List<UmsAdminRoleRelation> relationList = adminRoleRelationService.list(wrapper);
+        List<UmsAdminRoleRelation> relationList = adminRoleRelationService.list(
+                new LambdaQueryWrapper<UmsAdminRoleRelation>()
+                        .in(UmsAdminRoleRelation::getRoleId,roleIds)
+        );
         if (CollUtil.isNotEmpty(relationList)) {
             String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
             List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
@@ -93,24 +97,32 @@ public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {
     @Override
     public UmsAdmin getAdmin(String username) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + username;
-        return (UmsAdmin) redisService.get(key);
+        String value = redisService.get(key);
+        if (StrUtil.isBlank(value)) {
+            return null;
+        }
+        return  JSONUtil.toBean(value,UmsAdmin.class);
     }
 
     @Override
     public void setAdmin(UmsAdmin admin) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + admin.getUsername();
-        redisService.set(key, admin, REDIS_EXPIRE);
+        redisService.set(key, JSONUtil.toJsonStr(admin), REDIS_EXPIRE);
     }
 
     @Override
     public List<UmsResource> getResourceList(Long adminId) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
-        return (List<UmsResource>) redisService.get(key);
+        String value = redisService.get(key);
+        if (StrUtil.isBlank(value)) {
+            return null;
+        }
+        return JSONUtil.toList(value,UmsResource.class);
     }
 
     @Override
     public void setResourceList(Long adminId, List<UmsResource> resourceList) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
-        redisService.set(key, resourceList, REDIS_EXPIRE);
+        redisService.set(key, JSONUtil.toJsonStr(resourceList), REDIS_EXPIRE);
     }
 }

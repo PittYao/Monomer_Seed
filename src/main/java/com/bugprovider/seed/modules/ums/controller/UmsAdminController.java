@@ -10,8 +10,11 @@ import com.bugprovider.seed.modules.ums.dto.UmsAdminParam;
 import com.bugprovider.seed.modules.ums.dto.UpdateAdminPasswordParam;
 import com.bugprovider.seed.modules.ums.model.UmsAdmin;
 import com.bugprovider.seed.modules.ums.model.UmsRole;
+import com.bugprovider.seed.modules.ums.service.ICaptchaService;
+import com.bugprovider.seed.modules.ums.service.UmsAdminCacheService;
 import com.bugprovider.seed.modules.ums.service.UmsAdminService;
 import com.bugprovider.seed.modules.ums.service.UmsRoleService;
+import com.bugprovider.seed.security.config.captcha.CaptchaDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +46,11 @@ public class UmsAdminController {
     private UmsAdminService adminService;
     @Autowired
     private UmsRoleService roleService;
+    @Autowired
+    private UmsAdminCacheService adminCacheService;
+    @Autowired
+    private ICaptchaService captchaService;
+
 
     @ApiOperation(value = "用户注册")
     @PostMapping(value = "/register")
@@ -54,6 +62,9 @@ public class UmsAdminController {
     @ApiOperation(value = "登录以后返回token")
     @PostMapping(value = "/login")
     public Map<String, String> login(@Validated @RequestBody UmsAdminLoginParam umsAdminLoginParam) {
+        // 检验验证码
+        captchaService.checkCaptcha(umsAdminLoginParam);
+
         String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
@@ -196,4 +207,16 @@ public class UmsAdminController {
     public String test() {
         return "ok";
     }
+
+    /**
+     * 获取验证码
+     *
+     * @return base64 二维码
+     */
+    @GetMapping("/code/image")
+    public CaptchaDTO getImageCode() {
+        return captchaService.cacheCaptcha();
+    }
+
+
 }

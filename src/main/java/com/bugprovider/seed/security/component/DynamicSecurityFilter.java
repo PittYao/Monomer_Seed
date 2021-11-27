@@ -2,6 +2,7 @@ package com.bugprovider.seed.security.component;
 
 import cn.hutool.core.util.StrUtil;
 import com.bugprovider.seed.security.config.IgnoreUrlsConfig;
+import com.bugprovider.seed.security.exception.TokenErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
@@ -21,13 +22,10 @@ import java.io.IOException;
 @Slf4j
 public class DynamicSecurityFilter extends AbstractSecurityInterceptor implements Filter {
 
-    public static final String FILTER_APPLIED = "__spring_security_DynamicSecurityFilter_filterApplied";
-
     @Resource
     private DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
     @Autowired
     private IgnoreUrlsConfig ignoreUrlsConfig;
-
 
     @Resource
     public void setMyAccessDecisionManager(DynamicAccessDecisionManager dynamicAccessDecisionManager) {
@@ -40,6 +38,7 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        FilterInvocation fi = new FilterInvocation(servletRequest, servletResponse, filterChain);
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
@@ -55,8 +54,6 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
         if (StrUtil.isNotBlank(tokenError)) {
             throw new TokenErrorException(tokenError);
         }
-
-        FilterInvocation fi = new FilterInvocation(servletRequest, servletResponse, filterChain);
 
         //此处会先调用SecurityMetadataSource获取请求地址需要的资源集合
         //再调用AccessDecisionManager中的decide方法进行鉴权操作

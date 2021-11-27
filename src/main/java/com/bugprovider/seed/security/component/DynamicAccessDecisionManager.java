@@ -1,6 +1,7 @@
 package com.bugprovider.seed.security.component;
 
 import cn.hutool.core.collection.CollUtil;
+import com.bugprovider.seed.security.exception.TokenErrorException;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -34,7 +35,7 @@ public class DynamicAccessDecisionManager implements AccessDecisionManager {
                 }
             }
         }
-        throw new AccessDeniedException("抱歉，您没有访问权限");
+        throw new TokenErrorException("抱歉，您没有访问权限");
     }
 
     @Override

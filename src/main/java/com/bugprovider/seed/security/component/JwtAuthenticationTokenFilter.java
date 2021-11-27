@@ -2,6 +2,7 @@ package com.bugprovider.seed.security.component;
 
 import cn.hutool.core.util.StrUtil;
 import com.bugprovider.seed.security.config.IgnoreUrlsConfig;
+import com.bugprovider.seed.security.config.SecurityProperties;
 import com.bugprovider.seed.security.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private IgnoreUrlsConfig ignoreUrlsConfig;
     @Autowired
+    private SecurityProperties securityProperties;
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -40,6 +43,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        // 不开启security认证 返回空认证对象
+        if (!securityProperties.getOpen()) {
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(null, null, null);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            chain.doFilter(request, response);
+            return;
+        }
+
         // 获取请求头中 Authorization 属性值
         String authHeader = request.getHeader(this.tokenHeader);
 

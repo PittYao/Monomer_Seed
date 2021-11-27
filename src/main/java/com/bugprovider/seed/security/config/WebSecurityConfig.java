@@ -36,9 +36,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UmsResourceService resourceService;
 
-    public WebSecurityConfig(UmsResourceService resourceService, UmsAdminService adminService) {
+    private final SecurityProperties securityProperties;
+
+    public WebSecurityConfig(UmsResourceService resourceService, UmsAdminService adminService, SecurityProperties securityProperties) {
         this.resourceService = resourceService;
         this.umsAdminService = adminService;
+        this.securityProperties = securityProperties;
     }
 
     @Override
@@ -73,12 +76,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(restfulAccessDeniedHandler())
                 .authenticationEntryPoint(restAuthenticationEntryPoint())
 
-                // 自定义权限拦截器JWT过滤器
                 .and()
+                // 自定义权限拦截器JWT过滤器
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
-
                 // 添加动态权限校验过滤器
                 .addFilterBefore(dynamicSecurityFilter(), FilterSecurityInterceptor.class);
+
     }
 
     @Bean

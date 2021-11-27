@@ -16,6 +16,7 @@ logging:
     # 日志文件夹名称
     name: logs
 
+# --- spring --- #
 spring:
   application:
     name: seed
@@ -88,6 +89,28 @@ secure:
       - /admin/register
       - /admin/info
       - /admin/logout
+      - /admin/code/image
+
+# --- security --- #
+security:
+  # --- 开启security验证 --- #
+  open: true
+  # --- 验证码 --- #
+  captcha:
+    # 开启验证码功能
+    open: false
+    # 图形验证码配置
+    image:
+      # 图片宽
+      width: 100
+      # 图片高
+      height: 50
+      # 验证码字数
+      length: 4
+      # 干扰线条数
+      lineCount: 2
+      # 验证码过期时间 60秒
+      expired: 60
 
 # --- knife4j --- #
 knife4j:

@@ -1,6 +1,7 @@
 package com.bugprovider.seed.security.component;
 
 import cn.hutool.core.util.URLUtil;
+import com.bugprovider.seed.security.config.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
@@ -19,6 +20,8 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
     private static Map<String, ConfigAttribute> configAttributeMap = null;
     @Autowired
     private DynamicSecurityService dynamicSecurityService;
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @PostConstruct
     public void loadDataSource() {
@@ -32,8 +35,14 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-        if (configAttributeMap == null) this.loadDataSource();
         List<ConfigAttribute> configAttributes = new ArrayList<>();
+
+        // 不开启security认证 返回空集合
+        if (!securityProperties.getOpen()) {
+            return configAttributes;
+        }
+
+        if (configAttributeMap == null) this.loadDataSource();
         //获取当前访问的路径
         String url = ((FilterInvocation) o).getRequestUrl();
         String path = URLUtil.getPath(url);

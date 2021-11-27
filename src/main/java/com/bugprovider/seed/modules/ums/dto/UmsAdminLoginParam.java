@@ -18,4 +18,8 @@ public class UmsAdminLoginParam {
     @NotEmpty
     @ApiModelProperty(value = "密码",required = true)
     private String password;
+    // 验证码
+    private String code;
+    // 验证码唯一编号
+    private String captchaKey;
 }

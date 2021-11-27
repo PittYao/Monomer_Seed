@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bugprovider.seed.common.exception.Asserts;
-import com.bugprovider.seed.domain.AdminUserDetails;
+import com.bugprovider.seed.security.domain.AdminUserDetails;
 import com.bugprovider.seed.modules.ums.dto.UmsAdminParam;
 import com.bugprovider.seed.modules.ums.dto.UpdateAdminPasswordParam;
 import com.bugprovider.seed.modules.ums.mapper.UmsAdminLoginLogMapper;
@@ -77,21 +77,25 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
 
     @Override
     public UmsAdmin register(UmsAdminParam umsAdminParam) {
+
+        //查询是否有相同用户名的用户
+        List<UmsAdmin> umsAdminList = list(
+                new LambdaQueryWrapper<UmsAdmin>()
+                        .eq(UmsAdmin::getUsername, umsAdminParam.getUsername())
+        );
+        if (CollUtil.isNotEmpty(umsAdminList)) {
+            Asserts.fail("该用户名已被注册");
+        }
+
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
         umsAdmin.setCreateTime(new Date());
         umsAdmin.setStatus(1);
-        //查询是否有相同用户名的用户
-        QueryWrapper<UmsAdmin> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(UmsAdmin::getUsername,umsAdmin.getUsername());
-        List<UmsAdmin> umsAdminList = list(wrapper);
-        if (umsAdminList.size() > 0) {
-            return null;
-        }
+
         //将密码进行加密操作
         String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
-        baseMapper.insert(umsAdmin);
+        this.save(umsAdmin);
 
         if (umsAdmin == null) {
             Asserts.fail("注册失败");
@@ -114,7 +118,7 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtil.generateToken(userDetails);
-//            updateLoginTimeByUsername(username);
+            updateLoginTimeByUsername(username);
             insertLoginLog(username);
         } catch (AuthenticationException e) {
             log.warn("登录异常:{}", e.getMessage());

@@ -2,8 +2,11 @@ POST http://localhost:8999/admin/login
 Content-Type: application/json
 
 {
-  "username": "ceshi",
-  "password": "123456"
+  "username": "fanyao",
+  "password": "123456",
+  "code": "s6q0",
+  "captchaKey": "9d9c85b7721f457f96457d501e0290b9"
+
 }
 > {%
     client.global.set("auth_token",response.body.data.token);
@@ -12,12 +15,16 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8999/admin/test
-Authorization: Bearer {{auth_token}}
+#Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 ###
 GET http://localhost:8999/subject/test
 Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+###
+GET http://localhost:8999/admin/code/image
 Content-Type: application/json
 
 ###

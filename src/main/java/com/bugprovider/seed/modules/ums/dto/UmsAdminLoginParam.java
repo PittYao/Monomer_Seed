@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UmsAdminLoginParam {
-    @NotEmpty
+    @NotEmpty(message = "用户名不能为空")
     @ApiModelProperty(value = "用户名",required = true)
     private String username;
     @NotEmpty

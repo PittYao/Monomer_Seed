@@ -10,7 +10,7 @@ server:
 # --- 日志 --- #
 logging:
   save:
-    enable: false # 日志是否存储到文件中
+    enable: true # 日志是否存储到文件中
   config: classpath:logback-spring.xml
   file:
     # 日志文件夹名称

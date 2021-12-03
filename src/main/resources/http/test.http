@@ -2,8 +2,8 @@ POST http://localhost:8999/admin/login
 Content-Type: application/json
 
 {
-  "username": "fanyao",
-  "password": "123456",
+  "username": "",
+  "password": "",
   "code": "s6q0",
   "captchaKey": "9d9c85b7721f457f96457d501e0290b9"
 
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8999/admin/test
-#Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 ###
@@ -25,6 +25,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8999/admin/code/image
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 ###

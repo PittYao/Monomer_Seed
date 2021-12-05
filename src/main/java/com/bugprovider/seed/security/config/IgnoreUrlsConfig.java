@@ -6,10 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,19 @@ import java.util.List;
 @EnableConfigurationProperties(IgnoreUrlsConfig.class)
 public class IgnoreUrlsConfig {
     private List<String> urls = new ArrayList<>();
+
+    private List<String> knife4jUrls = new ArrayList<>();
+
+    @PostConstruct
+    public void init() {
+        knife4jUrls.add("/doc.html");
+        knife4jUrls.add("/webjars/**");
+        knife4jUrls.add("/img.icons/**");
+        knife4jUrls.add("/swagger-resources/**");
+        knife4jUrls.add("/v3/api-docs");
+        knife4jUrls.add("/favicon.ico");
+    }
+
 
     public Boolean passIgnoreUrls(HttpServletRequest request,
                                   HttpServletResponse response,
@@ -54,6 +69,17 @@ public class IgnoreUrlsConfig {
             }
         }
 
+        return false;
+    }
+
+    public Boolean isKnife4j(ServerHttpRequest serverHttpRequest) {
+        String requestURI = serverHttpRequest.getURI().getPath();
+        PathMatcher pathMatcher = new AntPathMatcher();
+        for (String path : this.knife4jUrls) {
+            if (pathMatcher.match(path, requestURI)) {
+                return true;
+            }
+        }
         return false;
     }
 }

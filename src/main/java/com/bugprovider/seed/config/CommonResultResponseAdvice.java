@@ -3,6 +3,8 @@ package com.bugprovider.seed.config;
 import com.bugprovider.seed.annotation.IgnoreResponseAdvice;
 import com.bugprovider.seed.common.api.CommonResult;
 import com.bugprovider.seed.common.api.ResultCode;
+import com.bugprovider.seed.security.config.IgnoreUrlsConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -17,6 +19,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  */
 @RestControllerAdvice
 public class CommonResultResponseAdvice implements ResponseBodyAdvice<Object> {
+
+    @Autowired
+    private IgnoreUrlsConfig ignoreUrlsConfig;
+
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
         // 对添加注解 @IgnoreResponseAdvice 的不做json响应处理
@@ -27,6 +33,11 @@ public class CommonResultResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         if (body instanceof CommonResult) {
+            return body;
+        }
+
+        // 如果是knife4j的请求不能封装 否则无法访问knife4j
+        if (ignoreUrlsConfig.isKnife4j(serverHttpRequest)) {
             return body;
         }
 
@@ -54,4 +65,6 @@ public class CommonResultResponseAdvice implements ResponseBodyAdvice<Object> {
 
         return new CommonResult<>(resultCode, body);
     }
+
+
 }

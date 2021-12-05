@@ -51,13 +51,13 @@ public class Knife4jConfig {
 
     @Bean(value = "defaultApi1")
     public Docket defaultApi1() {
-        List<SecurityScheme> securitySchemes=new ArrayList<>();
+        List<SecurityScheme> securitySchemes = new ArrayList<>();
 
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
 
-        List<SecurityContext> securityContexts= Arrays.asList(SecurityContext.builder()
+        List<SecurityContext> securityContexts = Arrays.asList(SecurityContext.builder()
                 .securityReferences(CollectionUtil.newArrayList(new SecurityReference("Authorization", authorizationScopes)))
                 .forPaths(PathSelectors.regex("/.*"))
                 .build());
@@ -68,10 +68,10 @@ public class Knife4jConfig {
         securitySchemes.add(httpAuthenticationScheme);
 
         //默认全局参数
-        List<RequestParameter> requestParameters=new ArrayList<>();
+        List<RequestParameter> requestParameters = new ArrayList<>();
         requestParameters.add(new RequestParameterBuilder().name("test").description("测试").in(ParameterType.QUERY).required(true).build());
 
-        Docket docket=new Docket(DocumentationType.OAS_30)
+        Docket docket = new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 //分组名称
                 .groupName("1.0")
@@ -84,12 +84,12 @@ public class Knife4jConfig {
         return docket;
     }
 
-    private ApiInfo apiInfo(){
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title(title)
                 .description(description)
                 .termsOfServiceUrl("")
-                .contact(new Contact(author,"",""))
+                .contact(new Contact(author, "", ""))
                 .version(version)
                 .build();
     }

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 后台资源分类管理Controller
+ * 后台资源分类管理
  */
 @Controller
-@Api(tags = "UmsResourceCategoryController", description = "后台资源分类管理")
+@Api(tags = "后台资源分类管理")
 @RequestMapping("/resourceCategory")
 public class UmsResourceCategoryController {
     @Autowired

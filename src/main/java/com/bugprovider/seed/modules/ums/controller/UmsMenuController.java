@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 后台菜单管理Controller
+ * 后台菜单管理
  */
 @Controller
-@Api(tags = "UmsMenuController", description = "后台菜单管理")
+@Api(tags = "后台菜单管理")
 @RequestMapping("/menu")
 public class UmsMenuController {
 

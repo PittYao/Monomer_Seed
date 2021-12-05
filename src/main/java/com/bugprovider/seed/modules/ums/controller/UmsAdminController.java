@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@Api(tags = "UmsAdminController", description = "后台用户管理")
+@Api(tags = "后台用户管理" )
 @RequestMapping("/admin")
 public class UmsAdminController {
     @Value("${jwt.tokenHeader}")

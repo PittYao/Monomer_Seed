@@ -72,19 +72,19 @@ redis:
 secure:
   ignored:
     urls:
-      # --- knife4j ---
+      # --- 放行knife4j 开始 ---
       - /doc.html
       - /webjars/**
       - /img.icons/**
       - /swagger-resources/**
       - /v3/api-docs
-      # --- 放行 knife4j ---
+      - /favicon.ico
+      # --- 放行 knife4j 结束---
       - /**/*.js
       - /**/*.css
       - /**/*.png
       - /**/*.ico
       - /actuator/**
-      - /druid/**
       - /admin/login
       - /admin/register
       - /admin/info
@@ -115,44 +115,22 @@ security:
 # --- knife4j --- #
 knife4j:
   enable: true
-  documents:
-    -
-      group: 1.2.x
-      name: 测试自定义标题分组
-      locations: classpath:md/*
-  setting:
-    enableSwaggerModels: true
-    enableDocumentManage: true
-    enableHost: false
-    enableHostText: http://localhost:18568
-    enableRequestCache: true
-    enableFilterMultipartApis: false
-    enableFilterMultipartApiMethodType: POST
-    language: zh-CN
-    enableAfterScript: false
-    enableHomeCustom: true
-    homeCustomLocation: classpath:test/home.md
-    enableFooter: false
-    enableFooterCustom: true
-    footerCustomContent: bugProvider
-    enableSearch: true
-    enableDebug: true
-    enableOpenApi: true
-    enableGroup: true
   cors: false
   production: false
   basic:
-    enable: false
+    enable: true
     username: test
     password: 123
   title: 单体应用接口文档
   description: api描述
-  version: 1.0
+  version: 1.0.0
   author: bugProvider
-  apiBasePackage: com.bugprovider.seed.modules.*.controller
+  apiBasePackage: com.bugprovider.seed.modules
 springfox:
   documentation:
     open-api:
       enabled: true
+
+
 
 

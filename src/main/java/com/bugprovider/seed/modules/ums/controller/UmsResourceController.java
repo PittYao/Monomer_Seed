@@ -20,7 +20,7 @@ import java.util.List;
  * 后台资源管理Controller
  */
 @Controller
-@Api(tags = "UmsResourceController", description = "后台资源管理")
+@Api(tags = "后台资源管理")
 @RequestMapping("/resource")
 public class UmsResourceController {
 

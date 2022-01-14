@@ -49,7 +49,7 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Resource
+    @Autowired
     private UmsAdminLoginLogMapper loginLogMapper;
     @Autowired
     private UmsAdminCacheService adminCacheService;

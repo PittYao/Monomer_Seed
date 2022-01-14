@@ -7,7 +7,7 @@ import com.bugprovider.seed.security.config.captcha.CaptchaDTO;
  * @author: bugProvider
  * @description: 验证码
  */
-public interface ICaptchaService {
+public interface UmsCaptchaService {
     // 缓存验证码到redis
     CaptchaDTO cacheCaptcha();
     // 校验验证码是否正确

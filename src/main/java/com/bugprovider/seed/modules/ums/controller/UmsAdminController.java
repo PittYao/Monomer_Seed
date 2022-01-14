@@ -10,10 +10,7 @@ import com.bugprovider.seed.modules.ums.dto.UmsAdminParam;
 import com.bugprovider.seed.modules.ums.dto.UpdateAdminPasswordParam;
 import com.bugprovider.seed.modules.ums.model.UmsAdmin;
 import com.bugprovider.seed.modules.ums.model.UmsRole;
-import com.bugprovider.seed.modules.ums.service.ICaptchaService;
-import com.bugprovider.seed.modules.ums.service.UmsAdminCacheService;
-import com.bugprovider.seed.modules.ums.service.UmsAdminService;
-import com.bugprovider.seed.modules.ums.service.UmsRoleService;
+import com.bugprovider.seed.modules.ums.service.*;
 import com.bugprovider.seed.security.config.captcha.CaptchaDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,8 +46,7 @@ public class UmsAdminController {
     @Autowired
     private UmsAdminCacheService adminCacheService;
     @Autowired
-    private ICaptchaService captchaService;
-
+    private UmsCaptchaService captchaService;
 
     @ApiOperation(value = "用户注册")
     @PostMapping(value = "/register")

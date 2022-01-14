@@ -25,7 +25,7 @@ public class CommonResultResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
-        // 对添加注解 @IgnoreResponseAdvice 的不做json响应处理
+        // 对controller的方法添加注解 @IgnoreResponseAdvice 的不做json响应处理
         IgnoreResponseAdvice methodAnnotation = methodParameter.getMethodAnnotation(IgnoreResponseAdvice.class);
         return methodAnnotation== null;
     }

@@ -90,8 +90,9 @@ secure:
       - /admin/info
       - /admin/logout
       - /admin/code/image
+      - /role/downloadFailedUsingJson
 
-# --- security --- #
+# --- security 功能 --- #
 security:
   # --- 开启security验证 --- #
   open: true

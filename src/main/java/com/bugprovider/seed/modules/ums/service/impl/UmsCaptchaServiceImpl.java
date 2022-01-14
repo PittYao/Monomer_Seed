@@ -6,7 +6,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.bugprovider.seed.common.exception.Asserts;
 import com.bugprovider.seed.modules.ums.dto.UmsAdminLoginParam;
-import com.bugprovider.seed.modules.ums.service.ICaptchaService;
+import com.bugprovider.seed.modules.ums.service.UmsCaptchaService;
 import com.bugprovider.seed.security.config.SecurityProperties;
 import com.bugprovider.seed.security.config.captcha.CaptchaDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Service
-public class CaptchaServiceImpl implements ICaptchaService {
+public class UmsCaptchaServiceImpl implements UmsCaptchaService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @Autowired

@@ -10,8 +10,12 @@ import com.bugprovider.seed.modules.ums.dto.UmsAdminParam;
 import com.bugprovider.seed.modules.ums.dto.UpdateAdminPasswordParam;
 import com.bugprovider.seed.modules.ums.model.UmsAdmin;
 import com.bugprovider.seed.modules.ums.model.UmsRole;
-import com.bugprovider.seed.modules.ums.service.*;
+import com.bugprovider.seed.modules.ums.service.UmsAdminCacheService;
+import com.bugprovider.seed.modules.ums.service.UmsAdminService;
+import com.bugprovider.seed.modules.ums.service.UmsCaptchaService;
+import com.bugprovider.seed.modules.ums.service.UmsRoleService;
 import com.bugprovider.seed.security.config.captcha.CaptchaDTO;
+import com.mzt.logapi.starter.annotation.LogRecordAnnotation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +36,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@Api(tags = "后台用户管理" )
+@Api(tags = "后台用户管理")
 @RequestMapping("/admin")
 public class UmsAdminController {
     @Value("${jwt.tokenHeader}")
@@ -164,6 +168,18 @@ public class UmsAdminController {
         return CommonResult.failed();
     }
 
+    /**
+     * 获取验证码
+     *
+     * @return base64 二维码
+     */
+    @ApiOperation("获取验证码")
+    @GetMapping("/code/image")
+
+    public CaptchaDTO getImageCode(String code) {
+        return captchaService.cacheCaptcha();
+    }
+
     @ApiOperation("修改帐号状态")
     @PostMapping(value = "/updateStatus/{id}")
     public CommonResult updateStatus(@PathVariable Long id, @RequestParam(value = "status") Integer status) {
@@ -202,16 +218,6 @@ public class UmsAdminController {
     @GetMapping("/test")
     public String test() {
         return "ok";
-    }
-
-    /**
-     * 获取验证码
-     *
-     * @return base64 二维码
-     */
-    @GetMapping("/code/image")
-    public CaptchaDTO getImageCode() {
-        return captchaService.cacheCaptcha();
     }
 
 

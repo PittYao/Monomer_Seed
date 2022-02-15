@@ -10,10 +10,10 @@ server:
 # --- 日志 --- #
 logging:
   save:
-    enable: true # 日志是否存储到文件中
+    enable: false # 日志是否存储到文件中
   config: classpath:logback-spring.xml
   file:
-    # 日志文件夹名称
+    # 生成日志文件夹名称
     name: logs
 
 # --- spring --- #
@@ -59,7 +59,7 @@ jwt:
   expiration: 604800 #JWT的超期限时间(60*60*24*7)
   tokenHead: 'Bearer '  #JWT负载中拿到开头
 
-# --- 自定义 redis --- #
+# --- redis --- #
 redis:
   database: mall
   key:
@@ -112,6 +112,24 @@ security:
       lineCount: 2
       # 验证码过期时间 60秒
       expired: 60
+
+# --- forest --- #
+forest:
+  bean-id: config0 # 在spring上下文中bean的id（默认为 forestConfiguration）
+  backend: okhttp3 # 后端HTTP框架（默认为 okhttp3）
+  max-connections: 1000 # 连接池最大连接数（默认为 500）
+  max-route-connections: 500 # 每个路由的最大连接数（默认为 500）
+  timeout: 3000 # 请求超时时间，单位为毫秒（默认为 3000）
+  connect-timeout: 3000 # 连接超时时间，单位为毫秒（默认为 timeout）
+  read-timeout: 3000 # 数据读取超时时间，单位为毫秒（默认为 timeout）
+  max-retry-count: 0 # 请求失败后重试次数（默认为 0 次不重试）
+  ssl-protocol: SSLv3 # 单向验证的HTTPS的默认SSL协议（默认为 SSLv3）
+  logEnabled: true # 打开或关闭日志（默认为 true）
+  log-request: true # 打开/关闭Forest请求日志（默认为 true）
+  log-response-status: true # 打开/关闭Forest响应状态日志（默认为 true）
+  log-response-content: true # 打开/关闭Forest响应内容日志（默认为 false）
+  variables:
+    xUrl: http://127.0.0.1/xxx # 变量
 
 # --- knife4j --- #
 knife4j:

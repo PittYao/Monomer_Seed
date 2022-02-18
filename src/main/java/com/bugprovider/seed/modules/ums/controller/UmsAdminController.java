@@ -1,9 +1,13 @@
 package com.bugprovider.seed.modules.ums.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.monitor4all.logRecord.annotation.OperationLog;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bugprovider.seed.common.api.CommonPage;
 import com.bugprovider.seed.common.api.CommonResult;
+import com.bugprovider.seed.common.domain.AnchorInfo;
+import com.bugprovider.seed.common.domain.LogParam;
+import com.bugprovider.seed.common.enums.AnchorState;
 import com.bugprovider.seed.common.exception.Asserts;
 import com.bugprovider.seed.modules.ums.dto.UmsAdminLoginParam;
 import com.bugprovider.seed.modules.ums.dto.UmsAdminParam;
@@ -15,7 +19,8 @@ import com.bugprovider.seed.modules.ums.service.UmsAdminService;
 import com.bugprovider.seed.modules.ums.service.UmsCaptchaService;
 import com.bugprovider.seed.modules.ums.service.UmsRoleService;
 import com.bugprovider.seed.security.config.captcha.CaptchaDTO;
-import com.mzt.logapi.starter.annotation.LogRecordAnnotation;
+import com.bugprovider.seed.utils.LogUtils;
+import com.bugprovider.seed.utils.TaskInfoUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +44,8 @@ import java.util.stream.Collectors;
 @Api(tags = "后台用户管理")
 @RequestMapping("/admin")
 public class UmsAdminController {
+    private static final String LOG_BIZ_TYPE = "UmsAdminController";
+
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
@@ -88,6 +95,7 @@ public class UmsAdminController {
 
     @ApiOperation(value = "获取当前登录用户信息")
     @GetMapping(value = "/info")
+    @OperationLog(bizId = "#principal.name", bizType = "ums", msg = "'获取当前登录用户信息'")
     public CommonResult getAdminInfo(Principal principal) {
         if (principal == null) {
             Asserts.fail("当前登录用户不存在");
@@ -175,7 +183,7 @@ public class UmsAdminController {
      */
     @ApiOperation("获取验证码")
     @GetMapping("/code/image")
-
+    @OperationLog(bizId = "#code", bizType = "image", msg = "'单纯的字符串'")
     public CaptchaDTO getImageCode(String code) {
         return captchaService.cacheCaptcha();
     }
@@ -205,6 +213,7 @@ public class UmsAdminController {
 
     @ApiOperation("获取指定用户的角色")
     @GetMapping(value = "/role/{adminId}")
+    @OperationLog(bizId = "#adminId", bizType = "ums", msg = "'获取指定用户的角色'")
     public List<UmsRole> getRoleList(@PathVariable Long adminId) {
         List<UmsRole> roleList = adminService.getRoleList(adminId);
         return roleList;
@@ -217,6 +226,8 @@ public class UmsAdminController {
      */
     @GetMapping("/test")
     public String test() {
+        // 示例记录日志信息
+        LogUtils.print(LogParam.builder().bizType(LOG_BIZ_TYPE).object(null).build(), AnchorInfo.builder().businessId(TaskInfoUtils.generateBusinessId()).state(AnchorState.RECEIVE.getCode()).build());
         return "ok";
     }
 

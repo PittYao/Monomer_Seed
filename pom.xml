@@ -112,6 +112,12 @@
             <artifactId>forest-spring-boot-starter</artifactId>
             <version>${forest.version}</version>
         </dependency>
+        <!--   log-record    -->
+        <dependency>
+            <groupId>cn.monitor4all</groupId>
+            <artifactId>log-record-starter</artifactId>
+            <version>1.0.7</version>
+        </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
